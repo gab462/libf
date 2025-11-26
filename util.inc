@@ -14,6 +14,25 @@ macro for addr
     end struc
 end macro
 
+macro when addr
+    local false, over
+
+    cmp qword [addr], 0
+    je false
+
+    struc (head) ? tail&
+        match =endwhen, head
+            label over
+            purge ?
+        else match =otherwise, head
+            jmp over
+            label false
+        else
+            head tail
+        end match
+    end struc
+end macro
+
 macro assign dest, src
     push [src]
     pop [dest]

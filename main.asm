@@ -12,7 +12,10 @@ start:
     pcall exit, 0
 
 proc main
-    var i, cond, result, addrof_result, nl, addrof_nl
+    var i, cond
+    var result, addrof_result
+    var nl, addrof_nl
+    var lt3
 
     mov qword [nl], 10
     addr addrof_nl, nl
@@ -26,13 +29,20 @@ proc main
         mov [result], rax
         addr addrof_result, result
 
-        pcall write, 1, [addrof_result], 1
-        pcall write, 1, [addrof_nl], 1
+        cmp qword [i], 3
+        setl [lt3]
+
+        when lt3
+            pcall write, 1, [addrof_result], 1
+        otherwise
+            pcall write, 1, [addrof_result], 1
+            pcall write, 1, [addrof_nl], 1
+        endwhen
 
         inc qword [i]
 
-        assign cond, i
-        sub qword [cond], 10
+        cmp qword [i], 10
+        setl [cond]
     endfor
 endproc
 
