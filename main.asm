@@ -1,25 +1,16 @@
 format ELF64 executable 3
 entry start
 
-include "proc.inc"
+include "linux/proc.inc"
+include "linux/sys.inc"
 
 segment readable executable
 
-write:
-    mov rax, 1
-    syscall
-    ret
-
-exit:
-    mov rax, 60
-    syscall
-    ret
-
 start:
-    procall main, 5, 3
+    procall add2, 5, 3
     procall exit, 0
 
-proc main, a, b
+proc add2, a, b
     mov rax, a
     add rax, b
     add rax, '0'
