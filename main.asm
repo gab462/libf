@@ -1,7 +1,7 @@
 format ELF64 executable 3
 entry start
 
-include "routine.inc"
+include "proc.inc"
 
 segment readable executable
 
@@ -16,10 +16,10 @@ exit:
     ret
 
 start:
-    subroutine main, 5, 3
-    subroutine exit, 0
+    procall main, 5, 3
+    procall exit, 0
 
-routine main, a, b
+proc main, a, b
     mov rax, a
     add rax, b
     add rax, '0'
@@ -30,7 +30,7 @@ routine main, a, b
     lea rax, [result] ; calculate address
     mov [result_addr], rax
 
-    subroutine write, 1, [result_addr], 1
-endr
+    procall write, 1, [result_addr], 1
+endproc
 
-; vim:ft=fasm:
+; vim:ft=fasm:et:sw=4:sts=4:

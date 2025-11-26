@@ -1,11 +1,11 @@
-macro routine name, args&
+macro proc name, args&
     label name
     namespace name
 
     local argcount
     argcount = 0
 
-    ; assign function argument registers to names
+    ; assign names to function argument registers
     iterate <arg>, args
         if argcount = 0
             label arg at rdi
@@ -20,7 +20,7 @@ macro routine name, args&
         else if argcount = 5
             label arg at r9
         else
-            err "too many arguments to routine"
+            err "too many arguments to proc"
         end if
 
         argcount = argcount + 1
@@ -35,7 +35,7 @@ macro routine name, args&
     lsp = 0
 
     struc (head) ? tail&
-        match =endr, head
+        match =endproc, head
             ; restore stack
             mov rsp, rbp
             pop rbp
@@ -44,6 +44,7 @@ macro routine name, args&
 
             purge ?
         else match =var, head
+            ; assign name to allocated stack variables
             iterate <varname>, tail
                 sub rsp, 8
                 lsp = lsp + 8
@@ -57,33 +58,33 @@ macro routine name, args&
     end namespace
 end macro
 
-macro subroutine name, args&
+macro procall name, args&
     ; store registers in stack
     iterate <reg>, rdi, rsi, rdx, r10, r8, r9
         push reg
     end iterate
 
-    local i
-    i = 0
+    local argcount
+    argcount = 0
 
     iterate <arg>, args
-        if i = 0
+        if argcount = 0
             mov rdi, arg
-        else if i = 1
+        else if argcount = 1
             mov rsi, arg
-        else if i = 2
+        else if argcount = 2
             mov rdx, arg
-        else if i = 3
+        else if argcount = 3
             mov r10, arg
-        else if i = 4
+        else if argcount = 4
             mov r8, arg
-        else if i = 5
+        else if argcount = 5
             mov r9, arg
         else
-            err "too many arguments to subroutine"
+            err "too many arguments to procall"
         end if
 
-        i = i + 1
+        argcount = argcount + 1
     end iterate
 
     call name
@@ -94,4 +95,4 @@ macro subroutine name, args&
     end iterate
 end macro
 
-; vim:ft=fasm:
+; vim:ft=fasm:et:sw=4:sts=4:
