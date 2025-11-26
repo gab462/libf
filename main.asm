@@ -3,25 +3,33 @@ entry start
 
 include "linux/proc.inc"
 include "linux/sys.inc"
+include "util.inc"
 
 segment readable executable
 
 start:
-    procall add2, 5, 3
+    procall main
     procall exit, 0
 
-proc add2, a, b
-    mov rax, a
-    add rax, b
-    add rax, '0'
+proc main
+    var i, cond, result, result_addr
 
-    var result, result_addr
+    mov qword [i], 0
 
-    mov [result], rax
-    lea rax, [result] ; calculate address
-    mov [result_addr], rax
+    for cond
+        mov rax, [i]
+        add rax, '0'
 
-    procall write, 1, [result_addr], 1
+        mov [result], rax
+        movaddr result_addr, result
+
+        procall write, 1, [result_addr], 1
+
+        inc qword [i]
+
+        movmem cond, i
+        sub qword [cond], 10
+    endfor
 endproc
 
 ; vim:ft=fasm:et:sw=4:sts=4:
