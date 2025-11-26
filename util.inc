@@ -14,12 +14,12 @@ macro for addr
     end struc
 end macro
 
-macro movmem dest, src
+macro assign dest, src
     push [src]
     pop [dest]
 end macro
 
-macro movaddr dest, src
+macro addr dest, src
     push rax
 
     lea rax, [src]

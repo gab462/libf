@@ -15,7 +15,7 @@ proc main
     var i, cond, result, addrof_result, nl, addrof_nl
 
     mov qword [nl], 10
-    movaddr addrof_nl, nl
+    addr addrof_nl, nl
 
     mov qword [i], 0
 
@@ -24,14 +24,14 @@ proc main
         add rax, '0'
 
         mov [result], rax
-        movaddr addrof_result, result
+        addr addrof_result, result
 
         pcall write, 1, [addrof_result], 1
         pcall write, 1, [addrof_nl], 1
 
         inc qword [i]
 
-        movmem cond, i
+        assign cond, i
         sub qword [cond], 10
     endfor
 endproc
