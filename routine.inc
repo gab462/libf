@@ -34,22 +34,8 @@ macro routine name, args&
     local lsp
     lsp = 0
 
-    ; store registers in stack
-    iterate <reg>, rdi, rsi, rdx, r10, r8, r9
-        sub rsp, 8
-        lsp = lsp + 8
-        mov [rbp-lsp], reg
-    end iterate
-
     struc (head) ? tail&
         match =endr, head
-            ; restore registers in stack
-            lsp = 0
-            iterate <reg>, rdi, rsi, rdx, r10, r8, r9
-                lsp = lsp + 8
-                mov reg, [rbp-lsp]
-            end iterate
-
             ; restore stack
             mov rsp, rbp
             pop rbp
@@ -72,6 +58,11 @@ macro routine name, args&
 end macro
 
 macro subroutine name, args&
+    ; store registers in stack
+    iterate <reg>, rdi, rsi, rdx, r10, r8, r9
+        push reg
+    end iterate
+
     local i
     i = 0
 
@@ -96,6 +87,11 @@ macro subroutine name, args&
     end iterate
 
     call name
+
+    ; restore registers from stack in reverse
+    iterate <reg>, r9, r8, r10, rdx, rsi, rdi
+        pop reg
+    end iterate
 end macro
 
 ; vim:ft=fasm:
