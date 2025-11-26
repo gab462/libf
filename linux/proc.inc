@@ -58,30 +58,32 @@ macro proc name, args&
     end namespace
 end macro
 
-macro procall name, args&
-    ; store registers in stack
-    iterate <reg>, rdi, rsi, rdx, r10, r8, r9
-        push reg
-    end iterate
-
+macro pcall name, args&
     local argcount
     argcount = 0
 
+    ; store registers in stack and replace with args
     iterate <arg>, args
         if argcount = 0
+            push rdi
             mov rdi, arg
         else if argcount = 1
+            push rsi
             mov rsi, arg
         else if argcount = 2
+            push rdx
             mov rdx, arg
         else if argcount = 3
+            push r10
             mov r10, arg
         else if argcount = 4
+            push r8
             mov r8, arg
         else if argcount = 5
+            push r9
             mov r9, arg
         else
-            err "too many arguments to procall"
+            err "too many arguments to pcall"
         end if
 
         argcount = argcount + 1
@@ -89,10 +91,26 @@ macro procall name, args&
 
     call name
 
-    ; restore registers from stack in reverse
-    iterate <reg>, r9, r8, r10, rdx, rsi, rdi
-        pop reg
-    end iterate
+    ; restore registers from stack
+    while argcount > 0
+        argcount = argcount - 1
+
+        if argcount = 0
+            pop rdi
+        else if argcount = 1
+            pop rsi
+        else if argcount = 2
+            pop rdx
+        else if argcount = 3
+            pop r10
+        else if argcount = 4
+            pop r8
+        else if argcount = 5
+            pop r9
+        else
+            err "unreachable"
+        end if
+    end while
 end macro
 
 ; vim:ft=fasm:et:sw=4:sts=4:

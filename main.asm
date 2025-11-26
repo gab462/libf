@@ -8,11 +8,14 @@ include "util.inc"
 segment readable executable
 
 start:
-    procall main
-    procall exit, 0
+    pcall main
+    pcall exit, 0
 
 proc main
-    var i, cond, result, result_addr
+    var i, cond, result, addrof_result, nl, addrof_nl
+
+    mov qword [nl], 10
+    movaddr addrof_nl, nl
 
     mov qword [i], 0
 
@@ -21,9 +24,10 @@ proc main
         add rax, '0'
 
         mov [result], rax
-        movaddr result_addr, result
+        movaddr addrof_result, result
 
-        procall write, 1, [result_addr], 1
+        pcall write, 1, [addrof_result], 1
+        pcall write, 1, [addrof_nl], 1
 
         inc qword [i]
 
